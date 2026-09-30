@@ -6,17 +6,16 @@ import de.arbeitszeitrechner.calc.formatBalance
 import de.arbeitszeitrechner.calc.formatDuration
 import de.arbeitszeitrechner.calc.formatHoursInput
 import de.arbeitszeitrechner.calc.formatTime
+import de.arbeitszeitrechner.calc.germanDayName
 import de.arbeitszeitrechner.model.AppSettings
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.IsoFields
 
-private val DAY_NAMES = listOf("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag")
-
 val SHORT_DATE: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.")
 val LONG_DATE: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
 
-fun dayName(date: LocalDate): String = DAY_NAMES[date.dayOfWeek.value - 1]
+fun dayName(date: LocalDate): String = germanDayName(date)
 
 fun shortDayName(date: LocalDate): String = dayName(date).take(2)
 

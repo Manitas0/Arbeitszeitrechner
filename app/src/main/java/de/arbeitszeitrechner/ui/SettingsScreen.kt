@@ -46,6 +46,7 @@ import de.arbeitszeitrechner.model.BreakRule
 @Composable
 fun SettingsScreen(
     settings: AppSettings,
+    viewModel: MainViewModel,
     onSave: (AppSettings) -> Unit,
     onBack: () -> Unit,
 ) {
@@ -205,17 +206,21 @@ fun SettingsScreen(
             ) {
                 Text("Speichern")
             }
+
+            HorizontalDivider()
+            // Nach dem Wiederherstellen zurück zur Wochenansicht, damit keine alten Formularwerte bleiben.
+            BackupSection(viewModel = viewModel, onRestored = onBack)
         }
     }
 }
 
 @Composable
-private fun SectionTitle(text: String) {
+internal fun SectionTitle(text: String) {
     Text(text, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
 }
 
 @Composable
-private fun SwitchRow(
+internal fun SwitchRow(
     title: String,
     description: String,
     checked: Boolean,

@@ -44,6 +44,7 @@ private fun App(viewModel: MainViewModel) {
         BackHandler { showSettings = false }
         SettingsScreen(
             settings = viewModel.settings,
+            viewModel = viewModel,
             onSave = {
                 viewModel.updateSettings(it)
                 showSettings = false

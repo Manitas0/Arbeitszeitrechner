@@ -26,6 +26,11 @@ Pausen werden automatisch nach dem Arbeitszeitgesetz abgezogen.
 - **Einstellungen:** Wochenstunden (z. B. `20`, `38,5` oder `38:30`), Arbeitstage pro Woche,
   Obergrenze an/aus und eigene Pausenregeln
 - **Woche teilen:** Die Übersicht lässt sich als Text per Mail, WhatsApp usw. verschicken.
+- **Stundenzettel exportieren** (Kalender-Symbol oben): ein Monat als CSV-Datei für Excel, Numbers
+  oder Google Tabellen. Enthalten sind Kalenderwoche, Datum, Beginn, Ende, Pause und Stunden
+  (h:mm und dezimal) pro Tag sowie die Monatssumme. Die Datei lässt sich teilen oder speichern.
+- **Backup:** automatische Sicherung in eine selbst gewählte Datei sowie Backup speichern und
+  wiederherstellen (Einstellungen → *Daten sichern*).
 - Alle Daten bleiben lokal auf dem Gerät.
 
 ## Widgets und Schnelleinstellung
@@ -56,7 +61,15 @@ Stempeln, bei Änderungen in der App und automatisch alle 30 Minuten. Mit Androi
 
 Voraussetzung ist Android 8.0 oder neuer.
 
-### Updates ohne Datenverlust (empfohlen)
+### Updates ohne Datenverlust
+
+**Einfachster Weg – automatische Sicherung:** In den Einstellungen unter *Daten sichern* die
+*Automatische Sicherung* einschalten und eine Datei wählen, z. B. in „Downloads“ oder Google Drive.
+Die App aktualisiert die Datei nach jeder Änderung. Nach einer Neuinstallation zeigt die App einen
+Hinweis, dann *Backup wiederherstellen* wählen und dieselbe Datei öffnen. Den Haken *Diese Datei für
+die automatische Sicherung verwenden* setzen, dann läuft die Sicherung direkt weiter.
+
+**Ohne Neuinstallation – eigener Signaturschlüssel:**
 
 Android installiert ein Update nur, wenn es mit demselben Schlüssel signiert ist wie die installierte
 App. Ohne eigenen Schlüssel signiert GitHub jede APK mit einem neuen Debug-Schlüssel. Die App muss

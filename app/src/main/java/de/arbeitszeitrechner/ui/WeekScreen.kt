@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
@@ -61,6 +62,7 @@ import de.arbeitszeitrechner.ui.theme.LocalBalanceColors
 import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.YearMonth
 
 @Composable
 fun WeekScreen(viewModel: MainViewModel, onOpenSettings: () -> Unit) {
@@ -77,12 +79,16 @@ fun WeekScreen(viewModel: MainViewModel, onOpenSettings: () -> Unit) {
     val settings = viewModel.settings
     val summary = WorkCalculator.summarizeWeek(viewModel.weekStart, viewModel.entries, settings, now)
     var editingDate by remember { mutableStateOf<LocalDate?>(null) }
+    var showExport by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Arbeitszeitrechner") },
                 actions = {
+                    IconButton(onClick = { showExport = true }) {
+                        Icon(Icons.Default.DateRange, contentDescription = "Stundenzettel exportieren")
+                    }
                     IconButton(onClick = { shareWeek(context, summary, settings.weeklyHoursAreLimit) }) {
                         Icon(Icons.Default.Share, contentDescription = "Woche teilen")
                     }
@@ -113,6 +119,9 @@ fun WeekScreen(viewModel: MainViewModel, onOpenSettings: () -> Unit) {
                 )
             }
             item { SummaryCard(summary, isLimit = settings.weeklyHoursAreLimit) }
+            if (viewModel.entries.isEmpty()) {
+                item { RestoreHint(onOpenSettings) }
+            }
             items(summary.days, key = { it.entry.date.toString() }) { day ->
                 DayCard(
                     day = day,
@@ -142,6 +151,15 @@ fun WeekScreen(viewModel: MainViewModel, onOpenSettings: () -> Unit) {
         }
     }
 
+    if (showExport) {
+        val initialMonth = if (summary.weekStart == WorkCalculator.weekStartOf(today)) {
+            YearMonth.from(today)
+        } else {
+            YearMonth.from(summary.weekStart)
+        }
+        MonthExportDialog(viewModel = viewModel, initialMonth = initialMonth, onDismiss = { showExport = false })
+    }
+
     editingDate?.let { date ->
         DayEditDialog(
             entry = viewModel.entryFor(date),
@@ -156,6 +174,27 @@ fun WeekScreen(viewModel: MainViewModel, onOpenSettings: () -> Unit) {
                 editingDate = null
             },
         )
+    }
+}
+
+/** Hinweis nach einer (Neu-)Installation, dass sich ein Backup wiederherstellen lässt. */
+@Composable
+private fun RestoreHint(onOpenSettings: () -> Unit) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 8.dp, bottom = 4.dp)) {
+            Text(
+                "Noch keine Einträge. Tippe auf einen Tag, um loszulegen. Hast du ein Backup, kannst du " +
+                    "es in den Einstellungen wiederherstellen.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
+            )
+            TextButton(onClick = onOpenSettings, modifier = Modifier.align(Alignment.End)) {
+                Text("Backup wiederherstellen")
+            }
+        }
     }
 }
 

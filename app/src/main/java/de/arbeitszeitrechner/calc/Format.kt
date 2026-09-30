@@ -1,6 +1,8 @@
 package de.arbeitszeitrechner.calc
 
+import java.time.LocalDate
 import java.time.LocalTime
+import java.time.YearMonth
 import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -42,3 +44,17 @@ fun formatHoursInput(minutes: Int): String = when {
     minutes % 30 == 0 -> "${minutes / 60},5"
     else -> String.format(Locale.ROOT, "%d:%02d", minutes / 60, minutes % 60)
 }
+
+private val DAY_NAMES = listOf("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag")
+private val MONTH_NAMES = listOf(
+    "Januar", "Februar", "März", "April", "Mai", "Juni",
+    "Juli", "August", "September", "Oktober", "November", "Dezember",
+)
+
+fun germanDayName(date: LocalDate): String = DAY_NAMES[date.dayOfWeek.value - 1]
+
+/** "September 2026" */
+fun germanMonthName(month: YearMonth): String = "${MONTH_NAMES[month.monthValue - 1]} ${month.year}"
+
+/** 615 -> "10,25" (Dezimalstunden, z. B. für die Lohnabrechnung) */
+fun formatDecimalHours(minutes: Int): String = String.format(Locale.GERMANY, "%.2f", minutes / 60.0)
