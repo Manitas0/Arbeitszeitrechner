@@ -23,6 +23,11 @@ class Repository(context: Context) {
             runCatching { decode(date, JSONObject(json)) }.getOrNull()?.let { date to it }
         }.toMap()
 
+    fun loadEntry(date: LocalDate): DayEntry {
+        val json = entryPrefs.getString(date.toString(), null) ?: return DayEntry(date)
+        return runCatching { decode(date, JSONObject(json)) }.getOrDefault(DayEntry(date))
+    }
+
     fun saveEntry(entry: DayEntry) {
         entryPrefs.edit {
             if (entry.isEmpty) remove(entry.date.toString())

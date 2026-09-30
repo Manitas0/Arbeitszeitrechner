@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Arbeitszeit</string>
+    <string name="widget_week_label">Arbeitszeit – Woche</string>
+    <string name="widget_week_description">Wochenstunden, Grenze und Kommen/Gehen auf einen Blick</string>
+    <string name="widget_clock_label">Arbeitszeit – Stempeln</string>
+    <string name="widget_clock_description">Mit einem Tipp ein- oder ausstempeln</string>
+    <string name="tile_label">Stempeln</string>
 </resources>

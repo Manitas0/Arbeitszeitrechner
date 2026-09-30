@@ -7,11 +7,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import de.arbeitszeitrechner.calc.WorkCalculator
 import de.arbeitszeitrechner.data.Repository
+import de.arbeitszeitrechner.data.TimeClock
 import de.arbeitszeitrechner.model.AppSettings
 import de.arbeitszeitrechner.model.DayEntry
+import de.arbeitszeitrechner.widget.WorkWidgets
 import java.time.LocalDate
-import java.time.LocalTime
-import java.time.temporal.ChronoUnit
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -26,19 +26,28 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun entryFor(date: LocalDate): DayEntry = entries[date] ?: DayEntry(date)
 
+    /** Daten neu laden, z. B. nachdem per Widget oder Schnelleinstellung gestempelt wurde. */
+    fun reload() {
+        entries = repository.loadEntries()
+        settings = repository.loadSettings()
+    }
+
     fun saveEntry(entry: DayEntry) {
         repository.saveEntry(entry)
         entries = if (entry.isEmpty) entries - entry.date else entries + (entry.date to entry)
+        WorkWidgets.updateAll(getApplication<Application>())
     }
 
     fun deleteEntry(date: LocalDate) {
         repository.deleteEntry(date)
         entries = entries - date
+        WorkWidgets.updateAll(getApplication<Application>())
     }
 
     fun updateSettings(newSettings: AppSettings) {
         repository.saveSettings(newSettings)
         settings = newSettings
+        WorkWidgets.updateAll(getApplication<Application>())
     }
 
     fun previousWeek() {
@@ -53,17 +62,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         weekStart = WorkCalculator.weekStartOf(LocalDate.now())
     }
 
-    /** Stempelt den Beginn (Kommen) für heute auf die aktuelle Uhrzeit. */
-    fun clockIn() {
-        val today = LocalDate.now()
-        saveEntry(entryFor(today).copy(start = nowRounded(), end = null))
+    /** Kommen bzw. Gehen für heute auf die aktuelle Uhrzeit stempeln. */
+    fun toggleClock() {
+        TimeClock.toggle(getApplication<Application>())
+        entries = repository.loadEntries()
     }
-
-    /** Stempelt das Ende (Gehen) für heute auf die aktuelle Uhrzeit. */
-    fun clockOut() {
-        val today = LocalDate.now()
-        saveEntry(entryFor(today).copy(end = nowRounded()))
-    }
-
-    private fun nowRounded(): LocalTime = LocalTime.now().truncatedTo(ChronoUnit.MINUTES)
 }

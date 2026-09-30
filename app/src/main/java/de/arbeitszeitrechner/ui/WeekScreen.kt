@@ -119,8 +119,8 @@ fun WeekScreen(viewModel: MainViewModel, onOpenSettings: () -> Unit) {
                     isToday = day.entry.date == today,
                     settings = settings,
                     onClick = { editingDate = day.entry.date },
-                    onClockIn = viewModel::clockIn,
-                    onClockOut = viewModel::clockOut,
+                    onClockIn = viewModel::toggleClock,
+                    onClockOut = viewModel::toggleClock,
                 )
             }
             item {

@@ -28,6 +28,22 @@ Pausen werden automatisch nach dem Arbeitszeitgesetz abgezogen.
 - **Woche teilen:** Die Übersicht lässt sich als Text per Mail, WhatsApp usw. verschicken.
 - Alle Daten bleiben lokal auf dem Gerät.
 
+## Widgets und Schnelleinstellung
+
+- **Widget „Arbeitszeit – Woche“ (4×2):** Stunden dieser Woche mit Grenze, Fortschrittsbalken,
+  Status von heute („Seit 08:00 · Tagessoll um 18:45“) und ein **Kommen/Gehen-Knopf**.
+  Ein Tipp auf das Widget öffnet die App.
+- **Widget „Arbeitszeit – Stempeln“ (2×1):** Ein Tipp stempelt ein bzw. aus.
+- **Kachel „Stempeln“ in den Schnelleinstellungen:** Ein- und Ausstempeln direkt aus der
+  Benachrichtigungsleiste, ohne die App zu öffnen.
+
+Hinzufügen: lange auf den Homescreen tippen → *Widgets* → *Arbeitszeit*. Die Kachel: Schnelleinstellungen
+ganz herunterziehen → Stift-Symbol → *Stempeln* in die aktiven Kacheln ziehen.
+
+Die Widgets zeigen die Wochensumme der abgeschlossenen Zeiten und aktualisieren sich bei jedem
+Stempeln, bei Änderungen in der App und automatisch alle 30 Minuten. Mit Android 12 oder neuer
+übernehmen sie die Farben des Hintergrundbilds.
+
 ## App installieren
 
 1. Auf GitHub unter **Releases** die neueste Datei `Arbeitszeitrechner-….apk` auf dem Handy
@@ -82,4 +98,5 @@ Mit Android Studio das Projekt öffnen und starten, oder auf der Kommandozeile:
 | `app/src/main/java/de/arbeitszeitrechner/model/` | Datenmodell: Tageseintrag, Einstellungen, Pausenregeln |
 | `app/src/main/java/de/arbeitszeitrechner/data/` | Lokale Speicherung (SharedPreferences) |
 | `app/src/main/java/de/arbeitszeitrechner/ui/` | Oberfläche mit Jetpack Compose und Material 3 |
+| `app/src/main/java/de/arbeitszeitrechner/widget/` | Homescreen-Widgets und Schnelleinstellungs-Kachel |
 | `.github/workflows/android.yml` | Baut bei jedem Push Tests und APK und erstellt auf dem Standard-Branch ein Release |

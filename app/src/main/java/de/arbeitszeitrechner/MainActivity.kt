@@ -5,31 +5,40 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.viewmodel.compose.viewModel
 import de.arbeitszeitrechner.ui.MainViewModel
 import de.arbeitszeitrechner.ui.SettingsScreen
 import de.arbeitszeitrechner.ui.WeekScreen
 import de.arbeitszeitrechner.ui.theme.ArbeitszeitTheme
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             ArbeitszeitTheme {
-                App()
+                App(viewModel)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Es kann inzwischen per Widget oder Schnelleinstellung gestempelt worden sein.
+        viewModel.reload()
     }
 }
 
 @Composable
-private fun App(viewModel: MainViewModel = viewModel()) {
+private fun App(viewModel: MainViewModel) {
     var showSettings by rememberSaveable { mutableStateOf(false) }
     if (showSettings) {
         BackHandler { showSettings = false }
