@@ -29,8 +29,14 @@ data class DayEntry(
 data class BreakRule(val afterMinutes: Int, val breakMinutes: Int)
 
 data class AppSettings(
-    val weeklyTargetMinutes: Int = 40 * 60,
-    val workDaysPerWeek: Int = 5,
+    // Standard: Werkstudent mit 20 h an 2 Tagen pro Woche.
+    val weeklyTargetMinutes: Int = 20 * 60,
+    val workDaysPerWeek: Int = 2,
+    /**
+     * true: Die Wochenstunden sind eine Obergrenze (z. B. 20-Stunden-Grenze für Werkstudenten).
+     * Mehrarbeit wird dann als Überschreitung gewarnt statt als Überstunden angezeigt.
+     */
+    val weeklyHoursAreLimit: Boolean = true,
     val autoBreak: Boolean = true,
     /**
      * true: Es wird nur so viel Pause abgezogen, dass die Arbeitszeit nicht unter die

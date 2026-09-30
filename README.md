@@ -6,8 +6,11 @@ Pausen werden automatisch nach dem Arbeitszeitgesetz abgezogen.
 ## Funktionen
 
 - **Wochenübersicht** (Mo–So) mit Kalenderwoche, Blättern zwischen den Wochen
-- **Wochensumme** mit Sollzeit, Fortschrittsbalken, offenen Stunden bzw. Überstunden und
-  der Summe der abgezogenen Pausen
+- **Wochensumme** mit Fortschrittsbalken und der Summe der abgezogenen Pausen
+- **Werkstudenten-Modus** (Standard: 20 h an 2 Tagen): Die Wochenstunden gelten als Obergrenze.
+  Die App zeigt, wie viel bis zur Grenze fehlt, und warnt rot, wenn sie überschritten ist.
+  Ausgeschaltet zeigt sie Sollzeit, offene Stunden und Überstunden wie bei einer normalen Stelle.
+- **Tageshöchstgrenze:** Tage mit mehr als 10 h Arbeitszeit werden markiert (§ 3 ArbZG).
 - **Pro Tag:** Beginn, Ende und optional die tatsächlich gemachte Pause
 - **Automatischer Pausenabzug** nach § 4 ArbZG:
   - mehr als 6 Stunden Arbeit → 30 Minuten Pause
@@ -20,8 +23,8 @@ Pausen werden automatisch nach dem Arbeitszeitgesetz abgezogen.
   die laufende Zeit und die Uhrzeit, zu der das Tagessoll erreicht ist.
 - **Urlaub, Krank, Feiertag:** Diese Tage werden mit dem Tagessoll gutgeschrieben.
 - **Nachtschichten:** Liegt das Ende vor dem Beginn, wird über Mitternacht gerechnet.
-- **Einstellungen:** Wochenarbeitszeit (z. B. `40`, `38,5` oder `38:30`), Arbeitstage pro Woche und
-  eigene Pausenregeln
+- **Einstellungen:** Wochenstunden (z. B. `20`, `38,5` oder `38:30`), Arbeitstage pro Woche,
+  Obergrenze an/aus und eigene Pausenregeln
 - **Woche teilen:** Die Übersicht lässt sich als Text per Mail, WhatsApp usw. verschicken.
 - Alle Daten bleiben lokal auf dem Gerät.
 

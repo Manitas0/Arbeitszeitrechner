@@ -19,7 +19,11 @@ data class DayResult(
     val creditedMinutes: Int = 0,
     /** Beginn gesetzt, Ende noch offen und der Tag ist heute. */
     val running: Boolean = false,
-)
+) {
+    /** Mehr Arbeitszeit als die gesetzliche Tageshöchstgrenze (§ 3 ArbZG). */
+    val exceedsDailyMax: Boolean
+        get() = !entry.type.isAbsence && creditedMinutes > WorkCalculator.MAX_DAILY_WORK_MINUTES
+}
 
 data class WeekSummary(
     val weekStart: LocalDate,
@@ -32,6 +36,9 @@ data class WeekSummary(
 }
 
 object WorkCalculator {
+
+    /** § 3 ArbZG: höchstens 10 Stunden Arbeitszeit pro Tag. */
+    const val MAX_DAILY_WORK_MINUTES = 10 * 60
 
     fun weekStartOf(date: LocalDate): LocalDate =
         date.minusDays((date.dayOfWeek.value - DayOfWeek.MONDAY.value).toLong())

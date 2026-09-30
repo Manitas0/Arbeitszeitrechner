@@ -14,7 +14,8 @@ import java.time.LocalTime
 
 class WorkCalculatorTest {
 
-    private val settings = AppSettings()
+    private val settings = AppSettings(weeklyTargetMinutes = 40 * 60, workDaysPerWeek = 5)
+    private val workingStudent = AppSettings()
     private val monday = LocalDate.of(2026, 9, 28)
 
     private fun t(hour: Int, minute: Int = 0) = LocalTime.of(hour, minute)
@@ -86,6 +87,48 @@ class WorkCalculatorTest {
         assertEquals(t(16, 30), WorkCalculator.endTimeForTarget(t(8), 0, 480, settings))
         assertEquals(t(17), WorkCalculator.endTimeForTarget(t(8), 60, 480, settings))
         assertEquals(t(14), WorkCalculator.endTimeForTarget(t(8), 0, 360, settings))
+    }
+
+    @Test
+    fun defaultsAreWorkingStudent() {
+        assertEquals(20 * 60, workingStudent.weeklyTargetMinutes)
+        assertEquals(10 * 60, workingStudent.dailyTargetMinutes)
+        assertTrue(workingStudent.weeklyHoursAreLimit)
+    }
+
+    @Test
+    fun tenHourDayNeedsFortyFiveMinutesBreak() {
+        assertEquals(t(18, 45), WorkCalculator.endTimeForTarget(t(8), 0, 600, workingStudent))
+    }
+
+    @Test
+    fun dailyMaximum() {
+        val tenHours = WorkCalculator.evaluate(DayEntry(monday, start = t(8), end = t(18, 45)), workingStudent)
+        assertEquals(600, tenHours.creditedMinutes)
+        assertFalse(tenHours.exceedsDailyMax)
+
+        val tooLong = WorkCalculator.evaluate(DayEntry(monday, start = t(8), end = t(19)), workingStudent)
+        assertEquals(615, tooLong.creditedMinutes)
+        assertTrue(tooLong.exceedsDailyMax)
+
+        val vacation = WorkCalculator.evaluate(
+            DayEntry(monday, type = DayType.VACATION),
+            workingStudent.copy(weeklyTargetMinutes = 30 * 60),
+        )
+        assertEquals(900, vacation.creditedMinutes)
+        assertFalse(vacation.exceedsDailyMax)
+    }
+
+    @Test
+    fun workingStudentWeekReachesLimitExactly() {
+        val entries = mapOf(
+            monday to DayEntry(monday, start = t(8), end = t(18, 45)),
+            monday.plusDays(3) to DayEntry(monday.plusDays(3), start = t(9), end = t(19, 45)),
+        )
+        val summary = WorkCalculator.summarizeWeek(monday, entries, workingStudent)
+        assertEquals(20 * 60, summary.actualMinutes)
+        assertEquals(0, summary.balanceMinutes)
+        assertEquals(90, summary.breakMinutes)
     }
 
     @Test

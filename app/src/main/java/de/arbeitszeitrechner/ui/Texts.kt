@@ -45,7 +45,7 @@ private fun dayLine(day: DayResult): String? {
 }
 
 /** Text zum Teilen einer Woche (z. B. per Mail oder Messenger). */
-fun weekShareText(summary: WeekSummary): String = buildString {
+fun weekShareText(summary: WeekSummary, isLimit: Boolean): String = buildString {
     appendLine("Arbeitszeit KW ${weekNumber(summary.weekStart)} (${weekRange(summary.weekStart)})")
     appendLine()
     summary.days.forEach { day ->
@@ -53,7 +53,17 @@ fun weekShareText(summary: WeekSummary): String = buildString {
     }
     appendLine()
     appendLine("Summe: ${formatDuration(summary.actualMinutes)} h")
-    appendLine("Soll: ${formatDuration(summary.targetMinutes)} h")
-    appendLine("Saldo: ${formatBalance(summary.balanceMinutes)} h")
+    if (isLimit) {
+        val balance = summary.balanceMinutes
+        appendLine("Grenze: ${formatDuration(summary.targetMinutes)} h")
+        if (balance > 0) {
+            appendLine("Grenze überschritten um: ${formatDuration(balance)} h")
+        } else {
+            appendLine("Bis zur Grenze: ${formatDuration(-balance)} h")
+        }
+    } else {
+        appendLine("Soll: ${formatDuration(summary.targetMinutes)} h")
+        appendLine("Saldo: ${formatBalance(summary.balanceMinutes)} h")
+    }
     append("Abgezogene Pausen: ${formatDuration(summary.breakMinutes)} h")
 }

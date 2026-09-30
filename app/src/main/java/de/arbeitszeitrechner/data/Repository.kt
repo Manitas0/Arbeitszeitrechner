@@ -40,6 +40,7 @@ class Repository(context: Context) {
         return AppSettings(
             weeklyTargetMinutes = settingsPrefs.getInt("weeklyTargetMinutes", defaults.weeklyTargetMinutes),
             workDaysPerWeek = settingsPrefs.getInt("workDaysPerWeek", defaults.workDaysPerWeek),
+            weeklyHoursAreLimit = settingsPrefs.getBoolean("weeklyHoursAreLimit", defaults.weeklyHoursAreLimit),
             autoBreak = settingsPrefs.getBoolean("autoBreak", defaults.autoBreak),
             gradualDeduction = settingsPrefs.getBoolean("gradualDeduction", defaults.gradualDeduction),
             breakRules = defaultRules.mapIndexed { index, rule ->
@@ -55,6 +56,7 @@ class Repository(context: Context) {
         settingsPrefs.edit {
             putInt("weeklyTargetMinutes", settings.weeklyTargetMinutes)
             putInt("workDaysPerWeek", settings.workDaysPerWeek)
+            putBoolean("weeklyHoursAreLimit", settings.weeklyHoursAreLimit)
             putBoolean("autoBreak", settings.autoBreak)
             putBoolean("gradualDeduction", settings.gradualDeduction)
             settings.breakRules.forEachIndexed { index, rule ->

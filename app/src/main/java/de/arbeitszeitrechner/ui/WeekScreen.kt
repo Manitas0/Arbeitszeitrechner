@@ -83,7 +83,7 @@ fun WeekScreen(viewModel: MainViewModel, onOpenSettings: () -> Unit) {
             TopAppBar(
                 title = { Text("Arbeitszeitrechner") },
                 actions = {
-                    IconButton(onClick = { shareWeek(context, summary) }) {
+                    IconButton(onClick = { shareWeek(context, summary, settings.weeklyHoursAreLimit) }) {
                         Icon(Icons.Default.Share, contentDescription = "Woche teilen")
                     }
                     IconButton(onClick = onOpenSettings) {
@@ -112,7 +112,7 @@ fun WeekScreen(viewModel: MainViewModel, onOpenSettings: () -> Unit) {
                     onToday = viewModel::currentWeek,
                 )
             }
-            item { SummaryCard(summary) }
+            item { SummaryCard(summary, isLimit = settings.weeklyHoursAreLimit) }
             items(summary.days, key = { it.entry.date.toString() }) { day ->
                 DayCard(
                     day = day,
@@ -192,8 +192,10 @@ private fun WeekNavigator(
 }
 
 @Composable
-private fun SummaryCard(summary: WeekSummary) {
+private fun SummaryCard(summary: WeekSummary, isLimit: Boolean) {
     val balanceColors = LocalBalanceColors.current
+    val balance = summary.balanceMinutes
+    val limitExceeded = isLimit && balance > 0
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -222,13 +224,24 @@ private fun SummaryCard(summary: WeekSummary) {
             }
             LinearProgressIndicator(
                 progress = { progress },
+                color = if (limitExceeded) balanceColors.negative else MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
             )
             Row {
-                val balance = summary.balanceMinutes
-                if (balance < 0) {
+                if (isLimit) {
+                    if (limitExceeded) {
+                        Stat(
+                            "Grenze überschritten",
+                            "+${formatDuration(balance)} h",
+                            color = balanceColors.negative,
+                            modifier = Modifier.weight(1f),
+                        )
+                    } else {
+                        Stat("Bis zur Grenze", "${formatDuration(-balance)} h", modifier = Modifier.weight(1f))
+                    }
+                } else if (balance < 0) {
                     Stat("Noch offen", "${formatDuration(-balance)} h", modifier = Modifier.weight(1f))
                 } else {
                     Stat(
@@ -344,13 +357,21 @@ private fun DayDetail(day: DayResult, settings: AppSettings) {
         color = color,
         modifier = Modifier.padding(top = 6.dp),
     )
+    if (day.exceedsDailyMax) {
+        Text(
+            "Mehr als 10 h Arbeitszeit – gesetzliche Tageshöchstgrenze (§ 3 ArbZG)",
+            style = MaterialTheme.typography.bodySmall,
+            color = LocalBalanceColors.current.negative,
+            modifier = Modifier.padding(top = 4.dp),
+        )
+    }
 }
 
-private fun shareWeek(context: Context, summary: WeekSummary) {
+private fun shareWeek(context: Context, summary: WeekSummary, isLimit: Boolean) {
     val intent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
         putExtra(Intent.EXTRA_SUBJECT, "Arbeitszeit KW ${weekNumber(summary.weekStart)}")
-        putExtra(Intent.EXTRA_TEXT, weekShareText(summary))
+        putExtra(Intent.EXTRA_TEXT, weekShareText(summary, isLimit))
     }
     context.startActivity(Intent.createChooser(intent, "Woche teilen"))
 }

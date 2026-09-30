@@ -52,6 +52,7 @@ fun SettingsScreen(
     val rules = settings.breakRules
     var weeklyText by rememberSaveable { mutableStateOf(formatHoursInput(settings.weeklyTargetMinutes)) }
     var daysText by rememberSaveable { mutableStateOf(settings.workDaysPerWeek.toString()) }
+    var isLimit by rememberSaveable { mutableStateOf(settings.weeklyHoursAreLimit) }
     var autoBreak by rememberSaveable { mutableStateOf(settings.autoBreak) }
     var gradual by rememberSaveable { mutableStateOf(settings.gradualDeduction) }
     var rule1After by rememberSaveable { mutableStateOf(formatHoursInput(rules[0].afterMinutes)) }
@@ -121,6 +122,15 @@ fun SettingsScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
 
+            SwitchRow(
+                title = "Wochenstunden sind Obergrenze",
+                description = "Zum Beispiel die 20-Stunden-Grenze für Werkstudenten. Die App zeigt, " +
+                    "wie viel bis zur Grenze fehlt, und warnt, wenn sie überschritten ist. " +
+                    "Aus: Mehrarbeit wird als Überstunden angezeigt.",
+                checked = isLimit,
+                onCheckedChange = { isLimit = it },
+            )
+
             HorizontalDivider()
             SectionTitle("Pausen")
             SwitchRow(
@@ -183,6 +193,7 @@ fun SettingsScreen(
                         AppSettings(
                             weeklyTargetMinutes = weekly!!,
                             workDaysPerWeek = days!!,
+                            weeklyHoursAreLimit = isLimit,
                             autoBreak = autoBreak,
                             gradualDeduction = gradual,
                             breakRules = newRules,
