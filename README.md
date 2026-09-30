@@ -24,6 +24,10 @@ Werkstudenten mit 20 Stunden an 2 Tagen pro Woche, lässt sich aber für jede St
   Abschaltbar, dann wird die volle Pause abgezogen, sobald die Schwelle überschritten ist.
 - **Kommen / Gehen:** Mit einem Tipp für heute ein- und ausstempeln. Während der Arbeit zeigt die App
   die laufende Zeit und die Uhrzeit, zu der das Tagessoll erreicht ist.
+- **„20 h voll um …“:** Lassen sich die restlichen Wochenstunden heute schaffen (höchstens 10 h pro
+  Tag), zeigt die App statt des Tagessolls, wann die Woche voll ist. Gerechnet wird mit den Stunden
+  der übrigen Tage und der automatischen Pause. Beispiel: Montag 10:30 h gearbeitet, Donnerstag ab
+  8:00 → „20 h voll um 18:15“. Ist die Grenze erreicht, warnt die App rot: „20 h voll – jetzt ausstempeln“.
 - **Urlaub, Krank, Feiertag:** Diese Tage werden mit dem Tagessoll gutgeschrieben.
 - **Nachtschichten:** Liegt das Ende vor dem Beginn, wird über Mitternacht gerechnet.
 - **Einstellungen:** Wochenstunden (z. B. `20`, `38,5` oder `38:30`), Arbeitstage pro Woche,
@@ -39,7 +43,7 @@ Werkstudenten mit 20 Stunden an 2 Tagen pro Woche, lässt sich aber für jede St
 ## Widgets und Schnelleinstellung
 
 - **Widget „Arbeitszeit – Woche“ (4×2):** Stunden dieser Woche mit Grenze, Fortschrittsbalken,
-  Status von heute („Seit 08:00 · Tagessoll um 18:45“) und ein **Kommen/Gehen-Knopf**.
+  Status von heute („Seit 08:00 · 20 h voll um 18:45“) und ein **Kommen/Gehen-Knopf**.
   Ein Tipp auf das Widget öffnet die App.
 - **Widget „Arbeitszeit – Stempeln“ (2×1):** Ein Tipp stempelt ein bzw. aus.
 - **Kachel „Stempeln“ in den Schnelleinstellungen:** Ein- und Ausstempeln direkt aus der
@@ -118,8 +122,9 @@ Es gibt zwei Wege, die du beliebig mischen kannst:
 
 - **Stempeln:** Zu Arbeitsbeginn auf **Kommen** tippen, am Ende auf **Gehen**. Das geht auf der Karte
   von heute in der App, im Widget oder über die Kachel in den Schnelleinstellungen. Solange du
-  eingestempelt bist, zeigt die App, wann dein Tagessoll erreicht ist,
-  z. B. „Tagessoll erreicht um 18:45“.
+  eingestempelt bist, zeigt die App, bis wann du arbeiten musst: am letzten Arbeitstag der Woche
+  z. B. „20 h voll um 18:15“, sonst „Tagessoll um 18:45“. Genau dann ausstempeln, dann hast du die
+  20 Stunden voll, ohne drüber zu kommen.
 - **Nachtragen:** auf einen Tag in der Wochenübersicht tippen. Dann *Beginn* und *Ende* wählen und
   **Speichern** tippen. Die App zeigt direkt die Rechnung: Anwesenheit − Pause = Arbeitszeit.
 

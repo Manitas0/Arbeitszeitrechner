@@ -52,10 +52,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import de.arbeitszeitrechner.calc.DayResult
+import de.arbeitszeitrechner.calc.TodayGoal
 import de.arbeitszeitrechner.calc.WeekSummary
 import de.arbeitszeitrechner.calc.WorkCalculator
 import de.arbeitszeitrechner.calc.formatDuration
 import de.arbeitszeitrechner.calc.formatTime
+import de.arbeitszeitrechner.calc.goalText
 import de.arbeitszeitrechner.model.AppSettings
 import de.arbeitszeitrechner.model.DayType
 import de.arbeitszeitrechner.ui.theme.LocalBalanceColors
@@ -127,6 +129,8 @@ fun WeekScreen(viewModel: MainViewModel, onOpenSettings: () -> Unit) {
                     day = day,
                     isToday = day.entry.date == today,
                     settings = settings,
+                    otherDaysMinutes = summary.minutesExcluding(day.entry.date),
+                    weekReached = summary.actualMinutes >= settings.weeklyTargetMinutes,
                     onClick = { editingDate = day.entry.date },
                     onClockIn = viewModel::toggleClock,
                     onClockOut = viewModel::toggleClock,
@@ -313,6 +317,8 @@ private fun DayCard(
     day: DayResult,
     isToday: Boolean,
     settings: AppSettings,
+    otherDaysMinutes: Int,
+    weekReached: Boolean,
     onClick: () -> Unit,
     onClockIn: () -> Unit,
     onClockOut: () -> Unit,
@@ -345,7 +351,7 @@ private fun DayCard(
                 )
             }
 
-            DayDetail(day, settings)
+            DayDetail(day, settings, otherDaysMinutes, weekReached)
 
             if (isToday && entry.type == DayType.WORK && (entry.start == null || entry.end == null)) {
                 Spacer(modifier = Modifier.height(12.dp))
@@ -366,7 +372,7 @@ private fun DayCard(
 }
 
 @Composable
-private fun DayDetail(day: DayResult, settings: AppSettings) {
+private fun DayDetail(day: DayResult, settings: AppSettings, otherDaysMinutes: Int, weekReached: Boolean) {
     val entry = day.entry
     val start = entry.start
     val end = entry.end
@@ -375,11 +381,13 @@ private fun DayDetail(day: DayResult, settings: AppSettings) {
         entry.type.isAbsence ->
             "${entry.type.label} · Tagessoll gutgeschrieben" to MaterialTheme.colorScheme.tertiary
         day.running && start != null -> {
-            val target = WorkCalculator.endTimeForTarget(
-                start, entry.manualBreakMinutes, settings.dailyTargetMinutes, settings,
-            )
-            "seit ${formatTime(start)} · $breakText\nTagessoll erreicht um ${formatTime(target)}" to
-                MaterialTheme.colorScheme.primary
+            val goal = WorkCalculator.todayGoal(entry, otherDaysMinutes, settings)
+            val goalLine = goal?.let { "\n" + goalText(it, settings, weekReached) }.orEmpty()
+            // Werkstudenten-Grenze erreicht: deutlich warnen.
+            val warn = settings.weeklyHoursAreLimit &&
+                (goal == TodayGoal.WeekAlreadyFull || (goal is TodayGoal.WeekFull && weekReached))
+            val color = if (warn) LocalBalanceColors.current.negative else MaterialTheme.colorScheme.primary
+            "seit ${formatTime(start)} · $breakText$goalLine" to color
         }
         start != null && end != null ->
             "${formatTime(start)} – ${formatTime(end)} · $breakText" to MaterialTheme.colorScheme.onSurfaceVariant

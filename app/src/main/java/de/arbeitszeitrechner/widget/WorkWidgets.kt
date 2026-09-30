@@ -11,10 +11,12 @@ import de.arbeitszeitrechner.MainActivity
 import de.arbeitszeitrechner.R
 import de.arbeitszeitrechner.calc.ClockAction
 import de.arbeitszeitrechner.calc.DayResult
+import de.arbeitszeitrechner.calc.TodayGoal
 import de.arbeitszeitrechner.calc.WeekSummary
 import de.arbeitszeitrechner.calc.WorkCalculator
 import de.arbeitszeitrechner.calc.formatDuration
 import de.arbeitszeitrechner.calc.formatTime
+import de.arbeitszeitrechner.calc.goalText
 import de.arbeitszeitrechner.calc.nextClockAction
 import de.arbeitszeitrechner.calc.todayStatusText
 import de.arbeitszeitrechner.calc.weekStatusText
@@ -33,6 +35,10 @@ private class WidgetSnapshot(
 ) {
     val limitExceeded: Boolean
         get() = settings.weeklyHoursAreLimit && summary.balanceMinutes > 0
+
+    /** Angerechnete Minuten der anderen Tage dieser Woche. */
+    val otherDaysMinutes: Int
+        get() = summary.minutesExcluding(today.entry.date)
 
     val progressPermille: Int
         get() = if (summary.targetMinutes > 0) {
@@ -99,7 +105,7 @@ object WorkWidgets {
                 R.id.widget_balance,
                 context.getColor(if (over) R.color.widget_warning else R.color.widget_text_secondary),
             )
-            setTextViewText(R.id.widget_today, todayStatusText(s.today, s.settings))
+            setTextViewText(R.id.widget_today, todayStatusText(s.today, s.otherDaysMinutes, s.settings))
 
             val action = s.action
             if (action != null) {
@@ -126,7 +132,13 @@ object WorkWidgets {
                 }
                 action == ClockAction.CLOCK_OUT && entry.start != null -> {
                     title = ClockAction.CLOCK_OUT.label
-                    subtitle = "seit ${formatTime(entry.start)}"
+                    // Am letzten Tag ist die wichtigste Info, wann die Woche voll ist.
+                    val goal = WorkCalculator.todayGoal(entry, s.otherDaysMinutes, s.settings)
+                    subtitle = if (goal is TodayGoal.WeekFull) {
+                        goalText(goal, s.settings)
+                    } else {
+                        "seit ${formatTime(entry.start)}"
+                    }
                 }
                 entry.type.isAbsence -> {
                     title = entry.type.label

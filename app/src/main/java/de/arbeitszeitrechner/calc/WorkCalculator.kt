@@ -33,6 +33,22 @@ data class WeekSummary(
     val breakMinutes: Int,
 ) {
     val balanceMinutes: Int get() = actualMinutes - targetMinutes
+
+    /** Angerechnete Minuten aller anderen Tage der Woche (ohne [date]). */
+    fun minutesExcluding(date: LocalDate): Int =
+        days.filter { it.entry.date != date }.sumOf { it.creditedMinutes }
+}
+
+/** Ziel für einen Arbeitstag, an dem gerade eingestempelt ist. */
+sealed interface TodayGoal {
+    /** Die Wochenstunden sind heute um [at] voll. */
+    data class WeekFull(val at: LocalTime) : TodayGoal
+
+    /** Die Wochenstunden sind schon durch die anderen Tage voll. */
+    data object WeekAlreadyFull : TodayGoal
+
+    /** Die Woche wird heute nicht voll (höchstens 10 h pro Tag); um [at] ist das Tagessoll erreicht. */
+    data class DailyTarget(val at: LocalTime) : TodayGoal
 }
 
 object WorkCalculator {
@@ -95,6 +111,24 @@ object WorkCalculator {
      * Uhrzeit, zu der bei Beginn um [start] die Sollzeit [targetMinutes] netto erreicht ist,
      * inklusive der automatisch abgezogenen Pause.
      */
+    /**
+     * Bis wann heute gearbeitet werden muss (bzw. darf): Lassen sich die restlichen Wochenstunden heute
+     * schaffen, zählt der Zeitpunkt, an dem die Woche voll ist – sonst das Tagessoll.
+     * [otherDaysMinutes] sind die angerechneten Minuten der übrigen Tage dieser Woche.
+     */
+    fun todayGoal(entry: DayEntry, otherDaysMinutes: Int, settings: AppSettings): TodayGoal? {
+        val start = entry.start ?: return null
+        val remaining = settings.weeklyTargetMinutes - otherDaysMinutes
+        return when {
+            remaining <= 0 -> TodayGoal.WeekAlreadyFull
+            remaining <= MAX_DAILY_WORK_MINUTES ->
+                TodayGoal.WeekFull(endTimeForTarget(start, entry.manualBreakMinutes, remaining, settings))
+            else -> TodayGoal.DailyTarget(
+                endTimeForTarget(start, entry.manualBreakMinutes, settings.dailyTargetMinutes, settings),
+            )
+        }
+    }
+
     fun endTimeForTarget(start: LocalTime, manualBreakMinutes: Int, targetMinutes: Int, settings: AppSettings): LocalTime {
         var attendance = targetMinutes.coerceAtLeast(0)
         while (attendance - BreakCalculator.deductedBreak(attendance, manualBreakMinutes, settings) < targetMinutes &&
