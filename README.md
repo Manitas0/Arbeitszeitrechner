@@ -1,7 +1,10 @@
 # Arbeitszeitrechner (Android)
 
 Android-App zum Erfassen der täglichen Arbeitszeit und zur Berechnung der Wochenarbeitszeit.
-Pausen werden automatisch nach dem Arbeitszeitgesetz abgezogen.
+Pausen werden automatisch nach dem Arbeitszeitgesetz abgezogen. Voreingestellt ist sie für
+Werkstudenten mit 20 Stunden an 2 Tagen pro Woche, lässt sich aber für jede Stelle anpassen.
+
+**Schnellstart:** [App installieren](#app-installieren) → [Erste Schritte](#erste-schritte)
 
 ## Funktionen
 
@@ -94,6 +97,74 @@ Dann im GitHub-Repository unter **Settings → Secrets and variables → Actions
 
 Die Keystore-Datei gut aufbewahren und **nicht** ins Repository einchecken.
 
+## Erste Schritte
+
+### 1. Einmal einrichten
+
+1. **Einstellungen prüfen:** oben rechts auf das Zahnrad tippen.
+   - *Wochenarbeitszeit* und *Arbeitstage pro Woche* eintragen, voreingestellt sind 20 Stunden an 2 Tagen.
+     Daraus ergibt sich das Tagessoll, hier 10 Stunden.
+   - *Wochenstunden sind Obergrenze* eingeschaltet lassen, wenn du als Werkstudent unter 20 Stunden
+     bleiben musst. Bei einer normalen Stelle ausschalten, dann zeigt die App Überstunden an.
+   - Auf **Speichern** tippen. Der Knopf steht unter den Pausenregeln.
+2. **Automatische Sicherung einschalten:** in den Einstellungen unter *Daten sichern* den Schalter
+   *Automatische Sicherung* antippen und einen Speicherort wählen, z. B. „Downloads“ oder Google Drive.
+   Ab jetzt ist jede Änderung gesichert.
+3. **Optional Widget und Kachel hinzufügen,** siehe [Widgets und Schnelleinstellung](#widgets-und-schnelleinstellung).
+
+### 2. Arbeitszeit erfassen
+
+Es gibt zwei Wege, die du beliebig mischen kannst:
+
+- **Stempeln:** Zu Arbeitsbeginn auf **Kommen** tippen, am Ende auf **Gehen**. Das geht auf der Karte
+  von heute in der App, im Widget oder über die Kachel in den Schnelleinstellungen. Solange du
+  eingestempelt bist, zeigt die App, wann dein Tagessoll erreicht ist,
+  z. B. „Tagessoll erreicht um 18:45“.
+- **Nachtragen:** auf einen Tag in der Wochenübersicht tippen. Dann *Beginn* und *Ende* wählen und
+  **Speichern** tippen. Die App zeigt direkt die Rechnung: Anwesenheit − Pause = Arbeitszeit.
+
+Die Pause musst du nicht eintragen, die gesetzliche Mindestpause zieht die App automatisch ab. Das
+Feld *Tatsächliche Pause* brauchst du nur, wenn du länger Pause gemacht hast.
+
+Bei **Urlaub, Krankheit oder Feiertag** den Tag antippen und oben die passende Art wählen. Der Tag
+zählt dann mit dem Tagessoll.
+
+Zum Korrigieren den Tag antippen und ändern. Mit **Löschen** entfernst du den Eintrag.
+
+### 3. Überblick behalten
+
+- Die Karte oben zeigt die Stunden der Woche und wie viel bis zur Grenze fehlt. Ist die Grenze
+  überschritten, wird sie rot.
+- Mit den Pfeilen neben „KW …“ blätterst du durch die Wochen, *Zur aktuellen Woche* springt zurück.
+- Das Teilen-Symbol oben verschickt die Woche als Text.
+
+### 4. Stundenzettel am Monatsende
+
+Oben auf das **Kalender-Symbol** tippen und mit den Pfeilen den Monat wählen. Dann:
+
+- **Teilen:** die CSV-Datei direkt per Mail oder Messenger verschicken, z. B. an den Arbeitgeber.
+- **Speichern:** die Datei ablegen, z. B. in „Downloads“ oder Google Drive.
+
+Die Datei öffnet sich in Excel, Numbers oder Google Tabellen. Die Spalte *Stunden (dezimal)* ist
+praktisch für die Lohnabrechnung: Stunden × Stundenlohn.
+
+### 5. Semesterferien
+
+In den Semesterferien dürfen Werkstudenten in der Regel mehr als 20 Stunden arbeiten. Dafür in den
+Einstellungen *Wochenstunden sind Obergrenze* ausschalten und nach den Ferien wieder einschalten.
+
+### 6. Neue Version installieren
+
+1. Neue APK unter **Releases** herunterladen.
+2. Alte App deinstallieren und die neue installieren. Der Zwischenschritt entfällt mit eigenem
+   Signaturschlüssel, siehe [Updates ohne Datenverlust](#updates-ohne-datenverlust).
+3. Die App zeigt „Noch keine Einträge“. Dort auf **Backup wiederherstellen** tippen. Das öffnet die
+   Einstellungen, dort unter *Daten sichern* noch einmal **Backup wiederherstellen** wählen.
+4. Deine Sicherungsdatei öffnen. Den Haken *Diese Datei für die automatische Sicherung verwenden*
+   gesetzt lassen und **Wiederherstellen** tippen.
+
+Danach sind alle Einträge und Einstellungen wieder da, und die automatische Sicherung läuft weiter.
+
 ## Selbst bauen
 
 Mit Android Studio das Projekt öffnen und starten, oder auf der Kommandozeile:
@@ -107,11 +178,13 @@ Mit Android Studio das Projekt öffnen und starten, oder auf der Kommandozeile:
 
 | Pfad | Inhalt |
 |------|--------|
-| `app/src/main/java/de/arbeitszeitrechner/calc/` | Berechnung: Pausenabzug, Tages- und Wochensummen (ohne Android-Abhängigkeiten, mit Unit-Tests) |
+| `app/src/main/java/de/arbeitszeitrechner/calc/` | Berechnung: Pausenabzug, Tages- und Wochensummen, Stempel-Logik, Statustexte, Stundenzettel-Export (CSV); ohne Android-Abhängigkeiten, mit Unit-Tests |
 | `app/src/main/java/de/arbeitszeitrechner/model/` | Datenmodell: Tageseintrag, Einstellungen, Pausenregeln |
-| `app/src/main/java/de/arbeitszeitrechner/data/` | Lokale Speicherung (SharedPreferences) |
-| `app/src/main/java/de/arbeitszeitrechner/ui/` | Oberfläche mit Jetpack Compose und Material 3 |
+| `app/src/main/java/de/arbeitszeitrechner/backup/` | JSON-Format für gespeicherte Einträge und Sicherungsdateien, mit Unit-Tests |
+| `app/src/main/java/de/arbeitszeitrechner/data/` | Lokale Speicherung (SharedPreferences), automatische Sicherung, Stempeln (`TimeClock`), Dateien lesen, schreiben und teilen |
+| `app/src/main/java/de/arbeitszeitrechner/ui/` | Oberfläche mit Jetpack Compose und Material 3: Wochenansicht, Tag bearbeiten, Einstellungen, Backup, Monatsexport |
 | `app/src/main/java/de/arbeitszeitrechner/widget/` | Homescreen-Widgets und Schnelleinstellungs-Kachel |
+| `app/src/test/` | Unit-Tests für Berechnung, Stempeln, Export und Sicherungsformat |
 | `.github/workflows/android.yml` | Baut bei jedem Push Tests und APK und erstellt auf dem Standard-Branch ein Release |
 
 ## Hinweis
