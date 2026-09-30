@@ -113,3 +113,17 @@ Mit Android Studio das Projekt öffnen und starten, oder auf der Kommandozeile:
 | `app/src/main/java/de/arbeitszeitrechner/ui/` | Oberfläche mit Jetpack Compose und Material 3 |
 | `app/src/main/java/de/arbeitszeitrechner/widget/` | Homescreen-Widgets und Schnelleinstellungs-Kachel |
 | `.github/workflows/android.yml` | Baut bei jedem Push Tests und APK und erstellt auf dem Standard-Branch ein Release |
+
+## Hinweis
+
+Die App ist ein privates Hilfsmittel zum Erfassen der eigenen Arbeitszeit und **keine Rechtsberatung**.
+Die Pausenregeln (§ 4 ArbZG), die Tageshöchstgrenze von 10 Stunden (§ 3 ArbZG) und die
+20-Stunden-Grenze für Werkstudenten sind vereinfacht umgesetzt. Ausnahmen, etwa durch Tarifverträge,
+Betriebsvereinbarungen, Semesterferien oder Arbeit am Abend und Wochenende, berücksichtigt die App nicht.
+Verbindlich sind der Arbeitsvertrag, die Angaben des Arbeitgebers und bei Fragen zur
+Sozialversicherung die Krankenkasse. Alle Angaben ohne Gewähr.
+
+## Lizenz
+
+[MIT](LICENSE) – der Code darf frei verwendet, verändert und weitergegeben werden, solange der
+Lizenzhinweis erhalten bleibt.
