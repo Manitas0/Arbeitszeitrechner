@@ -16,6 +16,11 @@ on:
       - 'LICENSE'
       - '.github/workflows/web.yml'
   workflow_dispatch:
+    inputs:
+      screenshots_in_log:
+        description: 'iOS-Bildschirmfotos zusätzlich verkleinert als Base64 ins Log schreiben'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -104,6 +109,19 @@ jobs:
 
       - name: UI-Test mit Bildschirmfotos
         run: bash ios/ci/build.sh screenshots
+
+      # Nur bei manuellem Start: Bilder ins Log, falls Artefakte nicht abrufbar sind.
+      - name: Bildschirmfotos ins Log schreiben
+        if: github.event_name == 'workflow_dispatch' && inputs.screenshots_in_log
+        run: |
+          mkdir -p ios/build/screenshots-small
+          for f in ios/build/screenshots/*.png; do
+            name=$(basename "$f")
+            sips -Z 900 "$f" --out "ios/build/screenshots-small/$name" > /dev/null
+            echo "----- BEGIN $name -----"
+            base64 -b 120 -i "ios/build/screenshots-small/$name"
+            echo "----- END $name -----"
+          done
 
       - uses: actions/upload-artifact@v4
         if: always()
