@@ -1,10 +1,25 @@
-# Arbeitszeitrechner (Android)
+# Arbeitszeitrechner
 
-Android-App zum Erfassen der täglichen Arbeitszeit und zur Berechnung der Wochenarbeitszeit.
-Pausen werden automatisch nach dem Arbeitszeitgesetz abgezogen. Voreingestellt ist sie für
-Werkstudenten mit 20 Stunden an 2 Tagen pro Woche, lässt sich aber für jede Stelle anpassen.
+App zum Erfassen der täglichen Arbeitszeit und zur Berechnung der Wochenarbeitszeit für Android,
+iPhone und als Web-App. Pausen werden automatisch nach dem Arbeitszeitgesetz abgezogen.
+Voreingestellt ist sie für Werkstudenten mit 20 Stunden an 2 Tagen pro Woche, lässt sich aber für
+jede Stelle anpassen.
 
-**Schnellstart:** [App installieren](#app-installieren) → [Erste Schritte](#erste-schritte)
+## Plattformen
+
+| Plattform | Installation | Besonderheiten |
+|-----------|--------------|----------------|
+| **Android** | APK unter **Releases**, siehe [App installieren](#app-installieren-android) | Widgets, Kachel in den Schnelleinstellungen, automatische Sicherung |
+| **iPhone** (native App) | Mit dem Mac über Xcode oder unter Windows mit Sideloadly (IPA unter **Releases**), siehe [ios/README.md](ios/README.md) | Widgets mit Kommen/Gehen-Knopf, Kontrollzentrum (iOS 18), Siri |
+| **Web-App** | <https://manitas0.github.io/Arbeitszeitrechner/> im Browser öffnen, auf dem iPhone in Safari über *Teilen → Zum Home-Bildschirm* | Ohne Installation, funktioniert offline, auch am PC; keine Widgets |
+
+Alle drei rechnen gleich: Sie werden gegen dieselben rund 3400 Testfälle geprüft
+(`shared/test-vectors.json`, erzeugt aus der Android-Logik). Backups und Stundenzettel haben
+überall dasselbe Format. Ein Backup von Android lässt sich auf dem iPhone oder in der Web-App
+wiederherstellen und umgekehrt.
+
+**Schnellstart Android:** [App installieren](#app-installieren-android) → [Erste Schritte](#erste-schritte).
+Die Anleitung gilt sinngemäß auch für iPhone und Web-App.
 
 ## Funktionen
 
@@ -56,7 +71,7 @@ Die Widgets zeigen die Wochensumme der abgeschlossenen Zeiten und aktualisieren 
 Stempeln, bei Änderungen in der App und automatisch alle 30 Minuten. Mit Android 12 oder neuer
 übernehmen sie die Farben des Hintergrundbilds.
 
-## App installieren
+## App installieren (Android)
 
 1. Auf GitHub unter **Releases** die neueste Datei `Arbeitszeitrechner-….apk` auf dem Handy
    herunterladen.
@@ -189,8 +204,12 @@ Mit Android Studio das Projekt öffnen und starten, oder auf der Kommandozeile:
 | `app/src/main/java/de/arbeitszeitrechner/data/` | Lokale Speicherung (SharedPreferences), automatische Sicherung, Stempeln (`TimeClock`), Dateien lesen, schreiben und teilen |
 | `app/src/main/java/de/arbeitszeitrechner/ui/` | Oberfläche mit Jetpack Compose und Material 3: Wochenansicht, Tag bearbeiten, Einstellungen, Backup, Monatsexport |
 | `app/src/main/java/de/arbeitszeitrechner/widget/` | Homescreen-Widgets und Schnelleinstellungs-Kachel |
-| `app/src/test/` | Unit-Tests für Berechnung, Stempeln, Export und Sicherungsformat |
-| `.github/workflows/android.yml` | Baut bei jedem Push Tests und APK und erstellt auf dem Standard-Branch ein Release |
+| `app/src/test/` | Unit-Tests für Berechnung, Stempeln, Export und Sicherungsformat, Erzeugung der gemeinsamen Testfälle |
+| `ios/` | iPhone-App (SwiftUI, Widgets, Kontrollzentrum), Rechenlogik als Swift-Paket `ArbeitszeitKit`, siehe [ios/README.md](ios/README.md) |
+| `web/` | Web-App (HTML/CSS/JavaScript ohne Abhängigkeiten, offline per Service Worker) mit Tests |
+| `shared/test-vectors.json` | Gemeinsame Testfälle für alle Plattformen; neu erzeugen mit `UPDATE_TEST_VECTORS=1 ./gradlew testDebugUnitTest --tests '*SharedVectorsTest*'` |
+| `.github/workflows/android.yml` | „Apps bauen“: Tests, APK und iOS-App (auf macOS); auf dem Standard-Branch ein Release mit APK und IPA |
+| `.github/workflows/web.yml` | „Web-App“: Tests und Veröffentlichung auf GitHub Pages |
 
 ## Hinweis
 
