@@ -1,0 +1,13 @@
+// Gemeinsame Build-Einstellungen für App, Widgets und UI-Tests.
+// Eigene Werte (Team, Bundle-ID) gehören in "Local.xcconfig", siehe "Local.xcconfig.example".
+
+AZ_BUNDLE_ID = de.manitas0.arbeitszeitrechner
+AZ_APP_GROUP = group.$(AZ_BUNDLE_ID)
+
+MARKETING_VERSION = 1.0
+CURRENT_PROJECT_VERSION = 1
+
+CODE_SIGN_STYLE = Automatic
+
+// Optional, wird nicht eingecheckt. Muss am Ende stehen, damit die Werte oben überschrieben werden.
+#include? "Local.xcconfig"

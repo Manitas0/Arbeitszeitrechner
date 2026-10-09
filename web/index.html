@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Arbeitszeitrechner</title>
+  <meta name="description" content="Arbeitszeit erfassen, Pausen nach dem Arbeitszeitgesetz automatisch abziehen und die Wochenstunden im Blick behalten – auch offline.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#1b6b5a" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#123a31" media="(prefers-color-scheme: dark)">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Arbeitszeit">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="src/app.js"></script>
+</head>
+<body>
+  <div id="app">
+    <noscript>
+      <p class="noscript">Der Arbeitszeitrechner braucht JavaScript. Bitte im Browser aktivieren.</p>
+    </noscript>
+  </div>
+  <div id="announcer" class="sr-only" aria-live="polite"></div>
+</body>
+</html>

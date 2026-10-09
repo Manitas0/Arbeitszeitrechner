@@ -1,0 +1,130 @@
+# XcodeGen-Projekt der iPhone-App. Erzeugen mit: cd ios && xcodegen
+# Bundle-ID, App Group und Versionsnummer stehen in Config.xcconfig,
+# eigene Werte (Team, Bundle-ID) in Local.xcconfig (siehe Local.xcconfig.example).
+name: Arbeitszeit
+
+options:
+  deploymentTarget:
+    iOS: "17.0"
+  developmentLanguage: de
+  createIntermediateGroups: true
+
+configFiles:
+  Debug: Config.xcconfig
+  Release: Config.xcconfig
+
+settings:
+  base:
+    # Swift-5-Sprachmodus: keine strikte Concurrency-Prüfung wie in Swift 6.
+    SWIFT_VERSION: "5.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+    TARGETED_DEVICE_FAMILY: "1,2"
+
+packages:
+  ArbeitszeitKit:
+    path: ArbeitszeitKit
+
+targets:
+  Arbeitszeit:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: App
+      - path: Shared
+    dependencies:
+      - package: ArbeitszeitKit
+      - target: ArbeitszeitWidgets
+        embed: true
+    info:
+      path: Supporting/Arbeitszeit-Info.plist
+      properties:
+        CFBundleDisplayName: Arbeitszeit
+        CFBundleDevelopmentRegion: $(DEVELOPMENT_LANGUAGE)
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        ITSAppUsesNonExemptEncryption: false
+        UILaunchScreen: {}
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        "UISupportedInterfaceOrientations~ipad":
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        # Die App liest die App Group zur Laufzeit hier aus (siehe Shared/WorkStorage.swift).
+        AZAppGroup: $(AZ_APP_GROUP)
+    entitlements:
+      path: Supporting/Arbeitszeit.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - $(AZ_APP_GROUP)
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(AZ_BUNDLE_ID)
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+
+  ArbeitszeitWidgets:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Widgets
+      - path: Shared
+    dependencies:
+      - package: ArbeitszeitKit
+    info:
+      path: Supporting/ArbeitszeitWidgets-Info.plist
+      properties:
+        CFBundleDisplayName: Arbeitszeit
+        CFBundleDevelopmentRegion: $(DEVELOPMENT_LANGUAGE)
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+        AZAppGroup: $(AZ_APP_GROUP)
+    entitlements:
+      path: Supporting/ArbeitszeitWidgets.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - $(AZ_APP_GROUP)
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(AZ_BUNDLE_ID).widgets
+        SKIP_INSTALL: YES
+
+  ArbeitszeitUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: UITests
+    dependencies:
+      - target: Arbeitszeit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(AZ_BUNDLE_ID).uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: Arbeitszeit
+
+schemes:
+  Arbeitszeit:
+    build:
+      targets:
+        Arbeitszeit: all
+        ArbeitszeitUITests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - ArbeitszeitUITests
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release

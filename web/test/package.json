@@ -1,0 +1,5 @@
+{
+  "//": "Node 22 führt bei \"node --test test/\" den Ordner als Modul aus; main verweist auf die Tests.",
+  "type": "module",
+  "main": "core.test.js"
+}

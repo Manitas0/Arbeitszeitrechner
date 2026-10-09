@@ -1,0 +1,9 @@
+Local.xcconfig
+*.xcodeproj
+xcuserdata/
+build/
+DerivedData/
+
+# Von XcodeGen erzeugte Info.plist- und Entitlements-Dateien
+Supporting/*
+!Supporting/.gitkeep

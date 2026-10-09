@@ -1,0 +1,10 @@
+// Kopie dieser Datei als "Local.xcconfig" speichern und anpassen. Sie wird nicht eingecheckt.
+// Danach im Ordner ios einmal "xcodegen" ausführen und das Projekt in Xcode neu öffnen.
+
+// Team-ID deiner Apple-ID: Xcode → Settings → Accounts → Apple-ID auswählen → Team.
+// Die ID steht auch unter "Signing & Capabilities", nachdem du dort einmal ein Team gewählt hast.
+DEVELOPMENT_TEAM = ABCDE12345
+
+// Eigene Bundle-ID, falls Xcode meldet, dass die Standard-ID schon vergeben ist
+// (z. B. mit einer kostenlosen Apple-ID). Die App Group wird automatisch daraus abgeleitet.
+// AZ_BUNDLE_ID = de.deinname.arbeitszeitrechner

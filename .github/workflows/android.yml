@@ -1,15 +1,27 @@
-name: Android-APK bauen
+# Baut Android- und iOS-App. Der Dateiname bleibt "android.yml", damit die
+# Build-Nummer (Versionscode der Android-App) weiter hochzählt.
+name: Apps bauen
 
 on:
   push:
+    paths-ignore:
+      - 'web/**'
+      - '**.md'
+      - 'LICENSE'
+      - '.github/workflows/web.yml'
   pull_request:
+    paths-ignore:
+      - 'web/**'
+      - '**.md'
+      - 'LICENSE'
+      - '.github/workflows/web.yml'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  android:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -50,13 +62,75 @@ jobs:
           name: Arbeitszeitrechner-apk
           path: Arbeitszeitrechner-*.apk
 
-      # Auf dem Standard-Branch wird automatisch ein Release mit der APK erstellt,
-      # das man direkt auf dem Handy herunterladen kann.
+  ios:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode-Version
+        run: xcodebuild -version
+
+      - name: Rechenlogik testen (Swift-Paket)
+        run: bash ios/ci/build.sh kit-test
+
+      - name: Xcode-Projekt erzeugen
+        run: bash ios/ci/build.sh generate
+
+      - name: App bauen (Simulator)
+        run: bash ios/ci/build.sh build
+
+      - name: Unsignierte IPA bauen (für Sideloadly)
+        env:
+          AZ_VERSION: 1.0.${{ github.run_number }}
+          AZ_BUILD: ${{ github.run_number }}
+        run: bash ios/ci/build.sh ipa
+
+      - name: IPA benennen
+        run: cp ios/build/Arbeitszeitrechner-iOS.ipa "Arbeitszeitrechner-iOS-1.0.${{ github.run_number }}.ipa"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Arbeitszeitrechner-ipa
+          path: Arbeitszeitrechner-iOS-*.ipa
+
+  # Bildschirmfotos aus dem Simulator (UI-Test) – zur Kontrolle der Oberfläche.
+  ios-screenshots:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode-Projekt erzeugen
+        run: bash ios/ci/build.sh generate
+
+      - name: UI-Test mit Bildschirmfotos
+        run: bash ios/ci/build.sh screenshots
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-screenshots
+          path: ios/build/screenshots
+          if-no-files-found: warn
+
+  # Auf dem Standard-Branch wird automatisch ein Release mit APK und IPA erstellt,
+  # das man direkt auf dem Handy bzw. am PC herunterladen kann.
+  release:
+    needs: [android, ios]
+    if: github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: Arbeitszeitrechner-*
+          path: dist
+          merge-multiple: true
+
       - name: Release veröffentlichen
-        if: github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.0.${{ github.run_number }}
           name: Arbeitszeitrechner 1.0.${{ github.run_number }}
-          files: Arbeitszeitrechner-*.apk
+          files: |
+            dist/Arbeitszeitrechner-*.apk
+            dist/Arbeitszeitrechner-iOS-*.ipa
           make_latest: true
