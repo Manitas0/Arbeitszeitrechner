@@ -95,16 +95,11 @@ struct WeekWidget: Widget {
 @available(iOS 18.0, *)
 struct ClockControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
+        // Der Builder für Steuerelemente erlaubt keine Verzweigungen. Ist heute nichts zu stempeln
+        // (Feierabend, Urlaub …), zeigt der Knopf nur den Stand und der Tipp ändert nichts.
         StaticControlConfiguration(kind: "ClockControl", provider: ClockControlProvider()) { title in
-            if ClockControlProvider.isClockAction(title) {
-                ControlWidgetButton(action: ToggleClockIntent()) {
-                    Label(title, systemImage: ClockControlProvider.symbolName(for: title))
-                }
-            } else {
-                // Nichts zu stempeln (Feierabend, Urlaub …): App öffnen wie die Android-Kachel.
-                ControlWidgetButton(action: OpenAppIntent()) {
-                    Label(title, systemImage: ClockControlProvider.symbolName(for: title))
-                }
+            ControlWidgetButton(action: ToggleClockIntent()) {
+                Label(title, systemImage: ClockControlProvider.symbolName(for: title))
             }
         }
         .displayName("Stempeln")
@@ -129,11 +124,6 @@ struct ClockControlProvider: ControlValueProvider {
             return action.label
         }
         return entry.type.isAbsence ? entry.type.label : "Feierabend"
-    }
-
-    /// "Kommen" oder "Gehen": Der Knopf stempelt, sonst öffnet er die App.
-    static func isClockAction(_ title: String) -> Bool {
-        return ClockAction.allCases.contains { $0.label == title }
     }
 
     static func symbolName(for title: String) -> String {

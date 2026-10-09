@@ -80,7 +80,8 @@ Schalte trotzdem die [automatische Sicherung](#daten-und-backup) ein.
 **Hinweis:** Widgets und Kontrollzentrum brauchen eine *App Group*, über die App und Widgets ihre Daten
 teilen. Sideloadly richtet sie nicht immer ein. Dann funktioniert die App ganz normal, die Widgets zeigen
 aber „Keine Daten“, und in den Einstellungen erscheint ein Hinweis. Stempeln geht dann nur in der App
-(und per Siri); der Knopf im Kontrollzentrum öffnet die App. Mit Xcode installiert funktionieren die Widgets.
+(und per Siri); der Knopf im Kontrollzentrum zeigt dann nur „Stempeln“. Mit Xcode installiert funktionieren
+die Widgets.
 
 ## Widgets, Kontrollzentrum und Siri
 
@@ -94,7 +95,7 @@ aber „Keine Daten“, und in den Einstellungen erscheint ein Hinweis. Stempeln
   bei Änderungen in der App, zum Zeitpunkt „Woche voll“ und um Mitternacht.
 - **Kontrollzentrum (ab iOS 18):** Kontrollzentrum öffnen → „+“ oben links → *Steuerelement hinzufügen* →
   *Arbeitszeit* → *Stempeln*. Der Knopf lässt sich auch auf den Sperrbildschirm oder die Aktionstaste legen.
-  Ist heute nichts mehr zu stempeln (Feierabend, Urlaub …), öffnet er die App.
+  Ist heute nichts mehr zu stempeln, zeigt er nur den Stand („Feierabend“, „Urlaub“ …).
 - **Siri und Kurzbefehle:** „Stempeln in Arbeitszeit“ oder „Arbeitszeit stempeln“. Die Aktion *Stempeln*
   steht auch in der Kurzbefehle-App, z. B. für eine Automation beim Erreichen des Arbeitsorts.
 

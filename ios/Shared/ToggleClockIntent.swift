@@ -14,17 +14,3 @@ struct ToggleClockIntent: AppIntent {
     }
 }
 
-/// Öffnet die App. Für das Kontrollzentrum, wenn heute nichts zu stempeln ist (wie die Android-Kachel).
-/// Liegt in App und Widgets, sonst kann ein Steuerelement die App nicht öffnen.
-struct OpenAppIntent: AppIntent {
-    static var title: LocalizedStringResource { "Arbeitszeit öffnen" }
-    static var openAppWhenRun: Bool { true }
-    /// Keine eigene Aktion in der Kurzbefehle-App.
-    static var isDiscoverable: Bool { false }
-
-    init() {}
-
-    func perform() async throws -> some IntentResult {
-        return .result()
-    }
-}
